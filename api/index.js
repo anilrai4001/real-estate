@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 dotenv.config();
 import userRouter from './routes/user.route.js'
+import authRouter from './routes/auth.route.js'
 
 mongoose.connect(process.env.MONGODB_URL)
     .then(()=>{
@@ -14,6 +15,7 @@ mongoose.connect(process.env.MONGODB_URL)
 
 
 const app = express()
+app.use(express.json())
 
 
 app.listen(5000, () => {
@@ -27,3 +29,4 @@ app.get('/',(req,res)=>{
 })
 
 app.use('/api/user', userRouter)
+app.use('/api/auth', authRouter)
