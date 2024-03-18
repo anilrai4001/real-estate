@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFail, loginStart, loginSuccess } from "../app/user/userSlice";
+import OAuth from "../components/OAuth";
 
 function Login() {
   const [formData, setFormData] = useState({});
@@ -66,10 +67,11 @@ function Login() {
           {loading ? "loading..." : "login"}
         </button>
         {error ? <p className="text-red-500">{error}</p> : null}
+        <OAuth />
       </form>
       <div className="mt-4 flex gap-2">
         <p>Do not have an account?</p>
-        <Link to={"/login"}>
+        <Link to={"/signup"}>
           <span className="text-blue-700 hover:underline">Signup</span>
         </Link>
       </div>

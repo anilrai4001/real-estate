@@ -25,11 +25,37 @@ export const login = async (req, res, next) => {
 
         //create and store a cookie to validate user log in
         const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
-        const {password: pass, ...rest } = validUser._doc
+        const { password: pass, ...rest } = validUser._doc
         res
-          .cookie('access_token', token, { httpOnly: true })
-          .status(200)
-          .json(rest);
+            .cookie('access_token', token, { httpOnly: true })
+            .status(200)
+            .json(rest);
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const google = async (req, res, next) => {
+    try {
+        const email = req.body.email;
+        let validUser = await User.findOne({ email });
+        if (!validUser) {
+            const randomPassword = Math.random().toString(36).slice(-16);
+            const hashedPassword = bcryptjs.hashSync(randomPassword, 10);
+            const username = req.body.name.split(' ').join('').toLowerCase() + Math.random().toString(36).slice(-9);
+            const newUser = new User({
+                username, email, password: hashedPassword, avatar: req.body.photo
+            })
+            await newUser.save();
+            validUser = await User.findOne({ email });
+        }
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+        const { password: pass, ...rest } = validUser._doc
+        res
+            .cookie('access_token', token, { httpOnly: true })
+            .status(200)
+            .json(rest);
 
     } catch (error) {
         next(error)
